@@ -1,32 +1,28 @@
 package com.stitchycoder.popularmovies;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
 import com.stitchycoder.popularmovies.utilities.MovieDBJsonUtils;
 import com.stitchycoder.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-
-import static com.stitchycoder.popularmovies.utilities.NetworkUtils.buildImagePath;
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageView mMoviePosterView;
+    private MoviePosterArrayAdapter posterAdapter;
+    private ArrayList<PopularMovie> mMovies = new ArrayList<>();
+    private GridView mGridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +30,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mMoviePosterView = (ImageView) findViewById(R.id.iv_movie_poster);
+        mGridView = (GridView) findViewById(R.id.gv_movie_posters);
 
-        new DownloadMovieData().execute();
+        DownloadMovieData task = new DownloadMovieData();
+        task.execute();
+
+
 
     }
 
+
+
     class DownloadMovieData extends AsyncTask<String, Void, String> {
 
-        ArrayList<Movie> popularMovies = new ArrayList<>();
 
         @Override
         protected String doInBackground(String... params) {
@@ -72,17 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+            //super.onPostExecute(s);
             try {
-                popularMovies = MovieDBJsonUtils.getMoviesArray(getApplicationContext(), s);
+                mMovies.addAll(MovieDBJsonUtils.getMoviesArray(getApplicationContext(), s));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            Log.v("Popular Movies array", "id: " + popularMovies.get(0).getMovieId());
-            URL imagePath = NetworkUtils.buildImagePath(popularMovies.get(1).getMovieId(), popularMovies.get(1).getPosterPath());
-            Log.v("Image path", imagePath.toString());
-            Picasso.with(getApplicationContext()).load(imagePath.toString()).into(mMoviePosterView);
+            posterAdapter = new MoviePosterArrayAdapter(getApplicationContext(), mMovies);
+            mGridView.setAdapter(posterAdapter);
 
         }
     }

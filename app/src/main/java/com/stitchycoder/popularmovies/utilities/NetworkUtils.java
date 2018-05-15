@@ -1,18 +1,14 @@
 package com.stitchycoder.popularmovies.utilities;
 
 import android.net.Uri;
-import android.net.http.HttpResponseCache;
-import android.util.Log;
 
-import com.squareup.picasso.OkHttpDownloader;
 import com.stitchycoder.popularmovies.BuildConfig;
+import com.stitchycoder.popularmovies.PopularMovie;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -30,6 +26,9 @@ public class NetworkUtils {
     private static final String IMAGE_SIZE = "w185";
     private static final String QUERY_PARAM = "api_key";
     private static final String API_KEY = BuildConfig.ApiKey;
+    private static final String SORT_BY_PARAM = "sort_by";
+    private static final String POPULARITY = "popularity.desc";
+    private static final String HIGHEST_RATING = "highest_rating";
 
     public static URL buildUrl()  {
 
@@ -41,7 +40,6 @@ public class NetworkUtils {
         URL url = null;
         try {
             url = new URL(uri.toString());
-            Log.v("Url: ", url.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -49,11 +47,11 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildImagePath(int movieId, String posterPath) {
-        String movieIdString = Integer.toString(movieId);
+    public static URL buildImagePath(PopularMovie movie) {
+        String movieIdString = Integer.toString(movie.getMovieId());
         Uri uri = Uri.parse(BASE_IMAGE_URL).buildUpon()
                 .appendPath(IMAGE_SIZE)
-                .appendEncodedPath(posterPath)
+                .appendEncodedPath(movie.getPosterPath())
                 .build();
 
         URL url = null;

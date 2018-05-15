@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by brook on 5/9/2018.
  */
 
-public class Movie {
+public class PopularMovie {
 
     private int mMovieId;
     private String mTitle;
@@ -17,7 +17,7 @@ public class Movie {
     private double mUserRating;
     private String mReleaseDate;
 
-    public Movie(int movieId) {
+    public PopularMovie(int movieId) {
         this.mMovieId = movieId;
     }
 
@@ -41,6 +41,7 @@ public class Movie {
     public int getMovieId() {
         return mMovieId;
     }
+
 
     public void setMovieId(int movieId) {
         mMovieId = movieId;

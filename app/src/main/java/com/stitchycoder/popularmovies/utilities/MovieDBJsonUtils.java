@@ -1,19 +1,16 @@
 package com.stitchycoder.popularmovies.utilities;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.Log;
 
-import com.stitchycoder.popularmovies.Movie;
+import com.stitchycoder.popularmovies.PopularMovie;
 import com.stitchycoder.popularmovies.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
-
-import static android.provider.Settings.Global.getString;
 
 /**
  * Created by brook on 5/12/2018.
@@ -30,8 +27,8 @@ public final class MovieDBJsonUtils {
 
     }
 
-    public static ArrayList<Movie> getMoviesArray(Context context, String jsonMovies) throws JSONException {
-        ArrayList<Movie> movies = new ArrayList<>();
+    public static ArrayList<PopularMovie> getMoviesArray(Context context, String jsonMovies) throws JSONException {
+        ArrayList<PopularMovie> movies = new ArrayList<>();
         JSONArray jsonArrayMovies = new JSONArray(jsonMovies);
         for (int i= 0; i < jsonArrayMovies.length(); i++) {
 
@@ -41,7 +38,7 @@ public final class MovieDBJsonUtils {
         return movies;
     }
 
-    private static Movie buildMovieObject(Context context, JSONObject jsonMovieObject) throws JSONException {
+    private static PopularMovie buildMovieObject(Context context, JSONObject jsonMovieObject) throws JSONException {
 
         final String ID = context.getResources().getString(R.string.movie_id);
         final String POSTER_PATH = context.getResources().getString(R.string.poster_path);
@@ -51,7 +48,7 @@ public final class MovieDBJsonUtils {
         final String VOTE_AVERAGE = context.getResources().getString(R.string.vote_average);
 
         int movieId = jsonMovieObject.getInt(ID);
-        Movie movie = new Movie(movieId);
+        PopularMovie movie = new PopularMovie(movieId);
         if (jsonMovieObject.has(TITLE)) {
             movie.setTitle(jsonMovieObject.getString(TITLE));
         }
@@ -67,6 +64,8 @@ public final class MovieDBJsonUtils {
         if (jsonMovieObject.has(VOTE_AVERAGE)) {
             movie.setUserRating(jsonMovieObject.getDouble(VOTE_AVERAGE));
         }
+        URL imagePath = NetworkUtils.buildImagePath(movie);
+        movie.setPosterPath(imagePath.toString());
 
         return movie;
 
