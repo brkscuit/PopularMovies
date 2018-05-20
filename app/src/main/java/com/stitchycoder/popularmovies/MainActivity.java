@@ -19,70 +19,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView mMoviePosterView;
-    private MoviePosterArrayAdapter posterAdapter;
-    private ArrayList<PopularMovie> mMovies = new ArrayList<>();
-    private GridView mGridView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mMoviePosterView = (ImageView) findViewById(R.id.iv_movie_poster);
-        mGridView = (GridView) findViewById(R.id.gv_movie_posters);
-
-        DownloadMovieData task = new DownloadMovieData();
-        task.execute();
-
-
-
-    }
-
-
-
-    class DownloadMovieData extends AsyncTask<String, Void, String> {
-
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            URL url = NetworkUtils.buildUrl();
-            String result = "";
-            Context context = getApplicationContext();
-
-            try {
-                result = NetworkUtils.getResponseFromHttpUrl(url);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //create movie objects here
-            String movieData = "";
-
-            try {
-                movieData = MovieDBJsonUtils.getMovieDataFromJSON(context, result);
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return movieData;
-        }
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            //super.onPostExecute(s);
-            try {
-                mMovies.addAll(MovieDBJsonUtils.getMoviesArray(getApplicationContext(), s));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            posterAdapter = new MoviePosterArrayAdapter(getApplicationContext(), mMovies);
-            mGridView.setAdapter(posterAdapter);
-
-        }
     }
 }

@@ -1,6 +1,8 @@
 package com.stitchycoder.popularmovies;
 
 import android.media.Image;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
@@ -8,7 +10,7 @@ import java.util.Date;
  * Created by brook on 5/9/2018.
  */
 
-public class PopularMovie {
+public class PopularMovie implements Parcelable {
 
     private int mMovieId;
     private String mTitle;
@@ -20,6 +22,27 @@ public class PopularMovie {
     public PopularMovie(int movieId) {
         this.mMovieId = movieId;
     }
+
+    protected PopularMovie(Parcel in) {
+        mMovieId = in.readInt();
+        mTitle = in.readString();
+        mPosterPath = in.readString();
+        mOverview = in.readString();
+        mUserRating = in.readDouble();
+        mReleaseDate = in.readString();
+    }
+
+    public static final Creator<PopularMovie> CREATOR = new Creator<PopularMovie>() {
+        @Override
+        public PopularMovie createFromParcel(Parcel in) {
+            return new PopularMovie(in);
+        }
+
+        @Override
+        public PopularMovie[] newArray(int size) {
+            return new PopularMovie[size];
+        }
+    };
 
     public String getTitle() {
         return mTitle;
@@ -70,4 +93,21 @@ public class PopularMovie {
     public void setReleaseDate(String releaseDate) {
         mReleaseDate = releaseDate;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mMovieId);
+        dest.writeString(mTitle);
+        dest.writeString(mPosterPath);
+        dest.writeString(mOverview);
+        dest.writeDouble(mUserRating);
+        dest.writeString(mReleaseDate);
+    }
+
+
 }

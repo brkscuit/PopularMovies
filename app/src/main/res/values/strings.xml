@@ -9,4 +9,11 @@
     <string name="release_date">release_date</string>
     <string name="vote_average">vote_average</string>
     <string name="genre_ids">genre_ids</string>
+
+    <!--  -->
+    <string name="detail_activity_title">Movie Details</string>
+    <!--Sort options menu-->
+    <string name="sort_options">Sort Options</string>
+    <string name="sort_by_popular">Most Popular</string>
+    <string name="sort_by_rating">Highest rating</string>
 </resources>

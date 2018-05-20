@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -19,6 +20,10 @@ public class MoviePosterArrayAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<PopularMovie> mMovies = new ArrayList<>();
+
+    public MoviePosterArrayAdapter(Context context) {
+        mContext = context;
+    }
 
     public MoviePosterArrayAdapter(Context context, ArrayList<PopularMovie> movies) {
         //super(context, 0, movies);
@@ -47,12 +52,19 @@ public class MoviePosterArrayAdapter extends BaseAdapter {
 
         if (convertView == null) {
             final LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.movie_item, null);
+            convertView = layoutInflater.inflate(R.layout.movie_item, parent, false);
         }
 
         final ImageView imageView = (ImageView)convertView.findViewById(R.id.iv_movie_poster);
 
         Picasso.with(mContext).load(movie.getPosterPath()).into(imageView);
         return imageView;
+    }
+
+
+    public void setMovieData(ArrayList<PopularMovie> movies) {
+        mMovies.clear();
+        mMovies.addAll(movies);
+        notifyDataSetChanged();
     }
 }

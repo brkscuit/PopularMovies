@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/sort_order_group"
+        android:checkableBehavior="single">
+        <item android:title="@string/sort_by_popular"
+            android:checked="true"
+            android:id="@+id/order_by_popularity">
+        </item>
+        <item android:title="@string/sort_by_rating"
+            android:checked="false"
+            android:id="@+id/order_by_rating"></item>
+    </group>
+</menu>

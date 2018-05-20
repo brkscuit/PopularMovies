@@ -20,21 +20,26 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie";
-    private static final String POPULAR_MOVIES = "popular";
     private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p";
     //private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
     private static final String IMAGE_SIZE = "w185";
     private static final String QUERY_PARAM = "api_key";
     private static final String API_KEY = BuildConfig.ApiKey;
-    private static final String SORT_BY_PARAM = "sort_by";
-    private static final String POPULARITY = "popularity.desc";
-    private static final String HIGHEST_RATING = "highest_rating";
+    public static final String POPULARITY = "popular";
+    public static final String HIGHEST_RATING = "top_rated";
 
-    public static URL buildUrl()  {
+    public static URL buildUrl(String sortOrder)  {
 
+        //default sort order
+        if (sortOrder.isEmpty()) {
+            sortOrder.equals(POPULARITY);
+        }
+
+        //build uri
         Uri uri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(POPULAR_MOVIES)
+                .appendPath(sortOrder)
                 .appendQueryParameter(QUERY_PARAM, API_KEY)
+
                 .build();
 
         URL url = null;
