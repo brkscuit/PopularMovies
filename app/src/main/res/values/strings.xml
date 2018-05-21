@@ -16,4 +16,9 @@
     <string name="sort_options">Sort Options</string>
     <string name="sort_by_popular">Most Popular</string>
     <string name="sort_by_rating">Highest rating</string>
+
+    <!-- Labels for detail text views -->
+    <string name="detail_overview_label">Overview</string>
+    <string name="detail_rating_label">User rating</string>
+    <string name="detail_release_date">Released in </string>
 </resources>
