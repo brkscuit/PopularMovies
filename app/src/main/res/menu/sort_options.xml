@@ -7,8 +7,9 @@
             android:checked="true"
             android:id="@+id/order_by_popularity">
         </item>
-        <item android:title="@string/sort_by_rating"
+        <item
+            android:title="@string/sort_by_rating"
             android:checked="false"
-            android:id="@+id/order_by_rating"></item>
+            android:id="@+id/order_by_rating" />
     </group>
 </menu>

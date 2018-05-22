@@ -1,15 +1,13 @@
 package com.stitchycoder.popularmovies;
 
-import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 /**
- * Created by brook on 5/9/2018.
+ * Created by Brook Scott on 5/9/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class PopularMovie implements Parcelable {
 
     private int mMovieId;
@@ -23,6 +21,7 @@ public class PopularMovie implements Parcelable {
         this.mMovieId = movieId;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected PopularMovie(Parcel in) {
         mMovieId = in.readInt();
         mTitle = in.readString();

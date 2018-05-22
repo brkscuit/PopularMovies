@@ -9,26 +9,24 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * Created by brook on 5/12/2018.
+ * Created by Brook Scott on 5/12/2018.
+ *
+ * Thanks to Udacity for all the helpful examples on their Android Development courses
+ * like the Android Flavor app
+ *
  */
 
-public class MoviePosterArrayAdapter extends BaseAdapter {
+@SuppressWarnings("RedundantCast")
+class MoviePosterArrayAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private ArrayList<PopularMovie> mMovies = new ArrayList<>();
+    private final Context mContext;
+    private final ArrayList<PopularMovie> mMovies = new ArrayList<>();
 
     public MoviePosterArrayAdapter(Context context) {
         mContext = context;
-    }
-
-    public MoviePosterArrayAdapter(Context context, ArrayList<PopularMovie> movies) {
-        //super(context, 0, movies);
-        this.mContext = context;
-        this.mMovies.addAll(movies);
     }
 
     @Override

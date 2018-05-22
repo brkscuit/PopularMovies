@@ -13,16 +13,21 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by brook on 5/12/2018.
+ * Created by Brook Scott on 5/12/2018.
+ *
+ * Used the Udacity examples available through the Android courses to develop this class for parsing
+ * the JSON returned from www.themoviedb.org API
  */
 
 public final class MovieDBJsonUtils {
 
-    public static String getMovieDataFromJSON(Context context, String jsonResult) throws JSONException {
+    private static final String DELIMITER = "-";
+    private static final String RESULTS_KEY = "results";
+
+    public static String getMovieDataFromJSON(String jsonResult) throws JSONException {
 
         JSONObject jsonObject = new JSONObject(jsonResult);
-        JSONArray popularMovies = jsonObject.getJSONArray("results");
-
+        JSONArray popularMovies = jsonObject.getJSONArray(RESULTS_KEY);
         return popularMovies.toString();
 
     }
@@ -59,7 +64,10 @@ public final class MovieDBJsonUtils {
             movie.setOverview(jsonMovieObject.getString(OVERVIEW));
         }
         if (jsonMovieObject.has(RELEASE_DATE)) {
-            movie.setReleaseDate(jsonMovieObject.getString(RELEASE_DATE));
+            String formatDate = jsonMovieObject.getString(RELEASE_DATE);
+            String date[] = formatDate.split(DELIMITER, 3);
+            String year = date[0];
+            movie.setReleaseDate(year);
         }
         if (jsonMovieObject.has(VOTE_AVERAGE)) {
             movie.setUserRating(jsonMovieObject.getDouble(VOTE_AVERAGE));
@@ -70,7 +78,5 @@ public final class MovieDBJsonUtils {
         return movie;
 
     }
-
-
 
 }

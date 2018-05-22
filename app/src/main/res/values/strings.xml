@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="detail_activity_title">Movie Details</string>
 
     <!--themoviedb.org API JSON name strings-->
     <string name="movie_id">id</string>
@@ -8,17 +9,20 @@
     <string name="overview">overview</string>
     <string name="release_date">release_date</string>
     <string name="vote_average">vote_average</string>
-    <string name="genre_ids">genre_ids</string>
 
-    <!--  -->
-    <string name="detail_activity_title">Movie Details</string>
+    <!-- Image content descriptions -->
+    <string name="movie_poster_image">Movie poster</string>
+    <string name="movie_db_logo">Movie database logo</string>
+
     <!--Sort options menu-->
-    <string name="sort_options">Sort Options</string>
     <string name="sort_by_popular">Most Popular</string>
     <string name="sort_by_rating">Highest rating</string>
 
     <!-- Labels for detail text views -->
     <string name="detail_overview_label">Overview</string>
-    <string name="detail_rating_label">User rating</string>
-    <string name="detail_release_date">Released in </string>
+    <string name="detail_rating_label">Vote average</string>
+
+    <!-- Error messages -->
+    <string name="internet_connectivity_message">Internet connection required</string>
+    <string name="movie_data_unavailable">Movie data is unavailable</string>
 </resources>

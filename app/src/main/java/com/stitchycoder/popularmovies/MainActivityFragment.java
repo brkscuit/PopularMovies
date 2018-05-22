@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.stitchycoder.popularmovies.utilities.MovieDBJsonUtils;
@@ -28,15 +26,19 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by brook on 5/16/2018.
+ * Created by Brook Scott on 5/16/2018.
+ *
+ * Used the Android Flavor app example from Udacity to learn how to create this fragment
  */
 
+@SuppressWarnings("RedundantCast")
 public class MainActivityFragment extends Fragment {
 
     private MoviePosterArrayAdapter mMovieArrayAdapter;
-    private ImageView mMoviePosterView;
-    private ArrayList<PopularMovie> mMovies = new ArrayList<>();
+    private static ArrayList<PopularMovie> mMovies = new ArrayList<>();
     private GridView mGridView;
+
+    public static final String MOVIE_DATA_EXTRA_KEY = "movies";
 
     public MainActivityFragment() {
     }
@@ -47,6 +49,7 @@ public class MainActivityFragment extends Fragment {
 
         setHasOptionsMenu(true);
         mMovieArrayAdapter = new MoviePosterArrayAdapter(getActivity());
+        Context context = getActivity().getApplicationContext();
     }
 
     @Nullable
@@ -55,11 +58,11 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mGridView = (GridView) rootView.findViewById(R.id.gv_movie_posters);
-        if (savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+        if (savedInstanceState == null || !savedInstanceState.containsKey(MOVIE_DATA_EXTRA_KEY)) {
             loadMovieData(NetworkUtils.POPULARITY);
         }
         else {
-            mMovies = savedInstanceState.getParcelableArrayList("movies");
+            mMovies = savedInstanceState.getParcelableArrayList(MOVIE_DATA_EXTRA_KEY);
             mMovieArrayAdapter.setMovieData(mMovies);
             mGridView.setAdapter(mMovieArrayAdapter);
         }
@@ -71,20 +74,15 @@ public class MainActivityFragment extends Fragment {
 
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), DetailActivity.class);
-                //How to pass our object to the detail activity
-                //intent.putExtra();
                 PopularMovie movie = (PopularMovie) mMovieArrayAdapter.getItem(position);
-                intent.putExtra("movie", movie);
+                intent.putExtra(MOVIE_DATA_EXTRA_KEY, movie);
                 startActivity(intent);
             }
         });
         return rootView;
-
     }
 
-
     class DownloadMovieData extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected String doInBackground(String... params) {
@@ -92,19 +90,17 @@ public class MainActivityFragment extends Fragment {
             String sortOrder = params[0];
             URL url = NetworkUtils.buildUrl(sortOrder);
             String result = "";
-            Context context = getContext();
 
             try {
                 result = NetworkUtils.getResponseFromHttpUrl(url);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //create movie objects here
+
             String movieData = "";
 
             try {
-                movieData = MovieDBJsonUtils.getMovieDataFromJSON(context, result);
-
+                movieData = MovieDBJsonUtils.getMovieDataFromJSON(result);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -116,10 +112,11 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String s) {
-            //super.onPostExecute(s);
+            Context context = getContext();
+
             try {
                 mMovies.clear();
-                mMovies.addAll(MovieDBJsonUtils.getMoviesArray(getContext(), s));
+                mMovies.addAll(MovieDBJsonUtils.getMoviesArray(context, s));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -130,17 +127,22 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-    public void loadMovieData(String sortOrder) {
-
-        DownloadMovieData task = new DownloadMovieData();
-        task.execute(sortOrder);
-
+    private void loadMovieData(String sortOrder) {
+        Context context = getActivity().getApplicationContext();
+        if (NetworkUtils.hasNetworkConnection(context)) {
+            DownloadMovieData task = new DownloadMovieData();
+            task.execute(sortOrder);
+        }
+        else {
+            Toast.makeText(context, R.string.internet_connectivity_message, Toast.LENGTH_LONG).show();
+        }
     }
+
 
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("movies", mMovies);
+        outState.putParcelableArrayList(MOVIE_DATA_EXTRA_KEY, mMovies);
         super.onSaveInstanceState(outState);
     }
 
@@ -153,7 +155,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Context context = getActivity();
+
         item.setChecked(true);
         int itemId = item.getItemId();
         switch (itemId) {
@@ -165,10 +167,7 @@ public class MainActivityFragment extends Fragment {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
-
     }
-
 
 }
