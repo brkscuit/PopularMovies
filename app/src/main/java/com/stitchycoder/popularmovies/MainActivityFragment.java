@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,9 +36,10 @@ import java.util.ArrayList;
 @SuppressWarnings("RedundantCast")
 public class MainActivityFragment extends Fragment {
 
-    private MoviePosterArrayAdapter mMovieArrayAdapter;
+    private MoviePosterAdapter mPosterAdapter;
     private static ArrayList<PopularMovie> mMovies = new ArrayList<>();
-    private GridView mGridView;
+    private RecyclerView mRecyclerView;
+    private Context mContext;
 
     public static final String MOVIE_DATA_EXTRA_KEY = "movies";
 
@@ -48,39 +51,44 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        mMovieArrayAdapter = new MoviePosterArrayAdapter(getActivity());
-        Context context = getActivity().getApplicationContext();
+        mContext = getActivity().getApplicationContext();
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mGridView = (GridView) rootView.findViewById(R.id.gv_movie_posters);
+        //View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        mRecyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_main, container, false);
+        //mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_movie_posters);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2 ));
         if (savedInstanceState == null || !savedInstanceState.containsKey(MOVIE_DATA_EXTRA_KEY)) {
             loadMovieData(NetworkUtils.POPULARITY);
         }
         else {
             mMovies = savedInstanceState.getParcelableArrayList(MOVIE_DATA_EXTRA_KEY);
-            mMovieArrayAdapter.setMovieData(mMovies);
-            mGridView.setAdapter(mMovieArrayAdapter);
+            //mPosterAdapter.setMovieData(mMovies);
+            setPosterAdapter();
         }
 
+//         mRecyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                Intent intent = new Intent();
+//                intent.setClass(getActivity(), DetailActivity.class);
+//                //PopularMovie movie = (PopularMovie) mPosterAdapter.getItem(position);
+//                //fix this later to get the right
+//                PopularMovie movie = (PopularMovie) mMovies.get(0);
+//                intent.putExtra(MOVIE_DATA_EXTRA_KEY, movie);
+//                startActivity(intent);
+//            }
+//        });
 
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), DetailActivity.class);
-                PopularMovie movie = (PopularMovie) mMovieArrayAdapter.getItem(position);
-                intent.putExtra(MOVIE_DATA_EXTRA_KEY, movie);
-                startActivity(intent);
-            }
-        });
-        return rootView;
+         return mRecyclerView;
     }
+
 
     class DownloadMovieData extends AsyncTask<String, Void, String> {
 
@@ -121,8 +129,9 @@ public class MainActivityFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            mMovieArrayAdapter.setMovieData(mMovies);
-            mGridView.setAdapter(mMovieArrayAdapter);
+            //mPosterAdapter.setMovieData(mMovies);
+            //mRecyclerView.setAdapter(mPosterAdapter);
+            setPosterAdapter();
 
         }
     }
@@ -138,7 +147,18 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-
+    public void setPosterAdapter() {
+        mPosterAdapter = new MoviePosterAdapter(mMovies, new MoviePosterAdapter.OnPosterClickListener() {
+            @Override
+            public void OnPosterClick(PopularMovie movie) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), DetailActivity.class);
+                intent.putExtra(MOVIE_DATA_EXTRA_KEY, movie);
+                startActivity(intent);
+            }
+        });
+        mRecyclerView.setAdapter(mPosterAdapter);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
